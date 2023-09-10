@@ -8,7 +8,6 @@ const loginStyle = {
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
 };
-
 const loginContentStyle = {
     position: "absolute",
     left: "50%",
@@ -19,14 +18,18 @@ const loginContentStyle = {
     background: "#fff",
     borderRadius: "1rem",
 };
-
 const loginLeftBlk = {
     // backgroundImage: `url("assets/login-img-1.jpg")`,
     width: "50%",
     height: "100%",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-}
+};
+const loginTitle = {
+    fontSize: "2rem",
+    fontWeight: "700",
+    fontFamily: "PingFang-SC-Bold",
+};
 
 export const Login = () => {
     return (
@@ -37,7 +40,10 @@ export const Login = () => {
                         <img src="assets/login-img-1.jpg" alt="With pictures" style={{borderRadius: "1rem"}} height="100%"></img>
                     </div>
                     <div className="col-6" style={{paddingTop: "8%"}}>
-                        <LoginForm></LoginForm>
+                        <div style={loginTitle} className="text-primary">登&nbsp;&nbsp;&nbsp;&nbsp;录</div>
+                        <div style={{width: "20rem", margin: "0 auto"}}>
+                            <LoginForm></LoginForm>
+                        </div>
                     </div>
                 </div>
             </div>
