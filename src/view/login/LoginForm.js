@@ -27,11 +27,11 @@ export const LoginForm = () => {
     }
     const validate = (data) => {
         let err = {};
-        if (!data.email || !(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(data.email))) {
-            err.email = "电子邮箱不符合规范";
+        if (!data.email || !(emailExp.test(data.email))) {
+            err.email = emailErr;
         }
-        if (!data.password || !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9~!@#$%^&*]{8,16}$/.test(data.password)) {
-            err.password = "必须包含大小写和数字, 长度在 8 到 16 个字符之间，可以使用：~!@#%^&*";
+        if (!data.password || !(passwordExp.test(data.password))) {
+            err.password = passwordErr;
         }
         return err;
     }
