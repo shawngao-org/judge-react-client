@@ -12,33 +12,43 @@ axios.interceptors.request.use((c) => {
 
 axios.interceptors.response.use((r) => {
     // response interceptors handle
+    if (!(r.status) || r.status !== 200) {
+        return;
+    }
     return r;
 }, (e) => {
-    console.log(e);
+    return Promise.resolve(e);
 });
 
+export function msg(msgs, status = "success", msg = "") {
+    if (status === "success") {
+        msgs.current.show([
+            {
+                severity: 'success',
+                detail: msg,
+                sticky: true,
+                closable: false
+            }
+        ]);
+    } else {
+        msgs.current.show([
+            {
+                severity: 'error',
+                detail: msg,
+                sticky: true,
+                closable: true
+            }
+        ]);
+    }
+    setTimeout(() => {
+        msgs.current.clear();
+    }, 5000);
+}
+
 export function get(u, p = {}) {
-    return new Promise((resolve, reject) => {
-        axios.get(u, {params: p})
-            .then((r) => {
-                // response handle
-                resolve(r.data);
-            }).catch((e) => {
-                // error handle
-                reject(e)
-        });
-    });
+    return axios.get(u, p);
 }
 
 export function post(u, o, p = {}) {
-    return new Promise((resolve, reject) => {
-        axios.post(u, o, {params: p})
-            .then((r) => {
-                // response handle
-                resolve(r.data);
-            }).catch((e) => {
-            // error handle
-            reject(e)
-        });
-    });
+    return axios.post(u, o, p);
 }
