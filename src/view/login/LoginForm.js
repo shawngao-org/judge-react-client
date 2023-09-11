@@ -1,25 +1,16 @@
-import {InputText} from "primereact/inputtext";
-import {Button} from "primereact/button";
 import {Field, Form} from "react-final-form";
-import {classNames} from "primereact/utils";
-import {msg} from "../../api/Api";
-import {EmailOutlined, KeyOutlined} from "@mui/icons-material";
-import {loginApi} from "../../api/ApiRouter";
 import {useRef} from "react";
-import {Messages} from "primereact/messages";
 import {emailErr, emailExp, passwordErr, passwordExp} from "../../util/ValidExp";
+import {useNavigate} from "react-router-dom";
+import {loginApiImpl} from "../../api/ApiRouter";
+import {Button, Col, Input, Row} from "antd";
+import {MailOutlined, KeyOutlined} from "@ant-design/icons";
 
 export const LoginForm = () => {
     const msgs = useRef();
+    const nav = useNavigate();
     async function login(data) {
-        const {response: res, data: dat} = await loginApi(data);
-        if (dat) {
-            localStorage.setItem("token", dat.token);
-            msg(msgs, "success", dat.message);
-        } else {
-            console.log(res);
-            msg(msgs, "error", res.data.exception);
-        }
+        await loginApiImpl(msgs, nav, data);
     }
     const validate = (data) => {
         let err = {};
@@ -37,14 +28,12 @@ export const LoginForm = () => {
     }
     return (
         <div>
-            <Messages ref={msgs}></Messages>
             <Form onSubmit={login} initialValues={{email: "", password: ""}} validate={validate} render={({handleSubmit}) => (
                 <form onSubmit={handleSubmit}>
                     <Field name="email" render={({input, meta}) => (
-                        <div className="mt-3 field">
+                        <div className="mt-10 field">
                                 <span className="p-input-icon-left">
-                                    <EmailOutlined />
-                                    <InputText placeholder="电子邮箱" {...input} className={classNames({'p-invalid': isFormFieldValid(meta)})} type="email" id="email" style={{width: "20rem"}}/>
+                                    <Input size="large" placeholder="电子邮箱" {...input} type="email" id="email" prefix={<MailOutlined />} style={{width: "20rem"}}/>
                                 </span>
                             {getFormErrMsg(meta)}
                         </div>
@@ -52,26 +41,33 @@ export const LoginForm = () => {
                     <Field name="password" render={({input, meta}) => (
                         <div className="mt-3">
                                 <span className="p-input-icon-left">
-                                    <KeyOutlined />
-                                    <InputText placeholder="密码" {...input} className={classNames({'p-invalid': isFormFieldValid(meta)})} type="password" id="password" style={{width: "20rem"}}/>
+                                    <Input.Password size="large" placeholder="密码" {...input} type="password" id="password" prefix={<KeyOutlined />} style={{width: "20rem"}}/>
                                 </span>
                             {getFormErrMsg(meta)}
                         </div>
                     )}></Field>
-                    <div style={{margin: "0 auto", width: "20rem"}} className="grid">
-                        <div style={{textAlign: "left"}} className="col-6">
-                            <a href="/" style={{textDecoration: "none"}} className="text-color-secondary">
-                                忘记密码
-                            </a>
-                        </div>
-                        <div style={{textAlign: "right"}} className="col-6">
-                            <a href="/" style={{textDecoration: "none"}} className="text-primary">
-                                注册新账号
-                            </a>
-                        </div>
+                    <div style={{margin: "0 auto", width: "20rem"}}>
+                        <Row>
+                            <Col span={12}>
+                                <div style={{textAlign: "left"}}>
+                                    <a href="/" style={{textDecoration: "none"}} className="text-secondary">
+                                        忘记密码
+                                    </a>
+                                </div>
+                            </Col>
+                            <Col span={12}>
+                                <div style={{textAlign: "right"}}>
+                                    <a href="/" style={{textDecoration: "none"}} className="text-secondary">
+                                        注册新账号
+                                    </a>
+                                </div>
+                            </Col>
+                        </Row>
                     </div>
-                    <div className="mt-5">
-                        <Button label="登录" type="submit" rounded style={{width: "20rem"}} />
+                    <div className="mt-7">
+                        <Button type="submit" shape="round" size="large" className="ant-btn-primary" style={{width: "20rem"}} >
+                            登录
+                        </Button>
                     </div>
                 </form>
             )}>
