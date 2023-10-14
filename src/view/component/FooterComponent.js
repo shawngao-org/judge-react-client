@@ -7,7 +7,7 @@ export const FooterComponent = () => {
                 textAlign: 'center',
             }}
         >
-            Ant Design ©2023 Created by Ant UED
+            Judge Server ©2023 Created by ShawnGao
         </Footer>
     );
 }
