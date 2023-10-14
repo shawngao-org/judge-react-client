@@ -57,9 +57,9 @@ export const LoginForm = () => {
                             </Col>
                             <Col span={12}>
                                 <div style={{textAlign: "right"}}>
-                                    <a href="/" style={{textDecoration: "none"}} className="text-secondary">
-                                        注册新账号
-                                    </a>
+                                    {/*<a href="/" style={{textDecoration: "none"}} className="text-secondary">*/}
+                                    {/*    注册新账号*/}
+                                    {/*</a>*/}
                                 </div>
                             </Col>
                         </Row>
