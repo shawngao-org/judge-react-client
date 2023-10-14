@@ -19,7 +19,6 @@ export const loginApiImpl = async (m, n, d) => {
     msg(m, "success", dat.message);
     n("/portal/dashboard");
   } else {
-    console.log(r);
     msg(m, "error", r.data.exception);
   }
 }

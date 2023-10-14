@@ -1,7 +1,7 @@
 import axios from "axios";
 
 axios.defaults.timeout = 100000;
-axios.defaults.baseURL = "http://localhost:8089/";
+axios.defaults.baseURL = window.reactGlobalConfig.backend;
 
 axios.interceptors.request.use((c) => {
     // request interceptors handle
