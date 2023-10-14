@@ -21,6 +21,9 @@ axios.interceptors.response.use((r) => {
 });
 
 export function msg(msgs, status = "success", msg = "") {
+    if (msgs.current) {
+        msgs.current.clear();
+    }
     if (status === "success") {
         msgs.current.show([
             {
@@ -41,6 +44,9 @@ export function msg(msgs, status = "success", msg = "") {
         ]);
     }
     setTimeout(() => {
+        if (!msgs.current) {
+            return;
+        }
         msgs.current.clear();
     }, 5000);
 }
