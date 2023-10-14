@@ -35,7 +35,7 @@ export const LoginForm = () => {
                                 <span className="p-input-icon-left">
                                     <Input size="large" placeholder="电子邮箱" {...input} type="email" id="email" prefix={<MailOutlined />} style={{width: "20rem"}}/>
                                 </span>
-                            {getFormErrMsg(meta)}
+                            <span className="text-danger">{getFormErrMsg(meta)}</span>
                         </div>
                     )}></Field>
                     <Field name="password" render={({input, meta}) => (
