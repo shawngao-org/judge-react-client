@@ -30,6 +30,10 @@ function getNav() {
     return items;
 }
 
+function getNavGroup() {
+    return routers.filter(v => v.path === "/portal")[0].children.map(v => "/portal/" + v.path);
+}
+
 export const Aside = () => {
     const nav = useNavigate();
     const location = useLocation()
@@ -54,7 +58,7 @@ export const Aside = () => {
                 items={getNav()}
                 onSelect={redirectRouter}
                 defaultSelectedKeys={[location.pathname]}
-                defaultOpenKeys={[location.pathname]}
+                defaultOpenKeys={getNavGroup()}
             />
         </Sider>
     );

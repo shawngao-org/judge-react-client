@@ -3,132 +3,81 @@ import {Home} from "../view/home/Home";
 import {Login} from "../view/login/Login";
 import {MainLayout} from "../view/MainLayout";
 import {Dashboard} from "../view/dashboard/Dashboard";
-import {SettingOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
+import {DashboardOutlined, SettingOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
+import {ActiveUser} from "../view/user/ActiveUser";
+import {routerTest} from "../api/ApiRouter";
 
-export const routers = [
-    {
-        path: "/",
-        icon: null,
-        element: <Home/>,
-        children: [],
-        name: "",
-        visible: false,
-    },
-    {
-        path: "/login",
-        icon: null,
-        element: <Login/>,
-        children: [],
-        name: "",
-        visible: false,
-    },
-    {
-        path: "/portal",
-        icon: null,
-        element: <MainLayout/>,
-        name: "",
-        visible: false,
-        children: [
-            {
-                path: "dashboard",
-                icon: "",
-                element: <Dashboard/>,
-                name: "仪表板",
-                visible: true,
-                children: [],
-            },
-            {
-                path: "user",
-                icon: <UserOutlined />,
-                name: "用户管理",
-                visible: true,
-                children: [
-                    {
-                        path: "activeUser",
-                        icon: null,
-                        element: <Home/>,
-                        name: "活跃用户",
-                        visible: true,
-                    },
-                    {
-                        path: "deletedUser",
-                        icon: null,
-                        element: <Home/>,
-                        name: "已删除的用户",
-                        visible: true,
-                    },
-                ],
-            },
-            {
-                path: "group",
-                icon: <TeamOutlined />,
-                name: "组织和个体",
-                visible: true,
-                children: [
-                    {
-                        path: "groupManage",
-                        icon: null,
-                        element: <Home/>,
-                        name: "组织管理",
-                        visible: true,
-                    },
-                    {
-                        path: "teacherManage",
-                        icon: null,
-                        element: <Home/>,
-                        name: "教师管理",
-                        visible: true,
-                    },
-                    {
-                        path: "studentManage",
-                        icon: null,
-                        element: <Home/>,
-                        name: "学生管理",
-                        visible: true,
-                    },
-                ],
-            },
-            {
-                path: "setting",
-                icon: <SettingOutlined />,
-                name: "设置",
-                visible: true,
-                children: [
-                    {
-                        path: "announcementManage",
-                        icon: null,
-                        element: <Home/>,
-                        name: "公告设置",
-                        visible: true,
-                    },
-                ],
-            },
-        ],
-    },
-];
+export const routerElementMapping = {
+    "home": {e: <Home />, i: null,},
+    "login": {e: <Login />, i: null,},
+    "portal": {e: <MainLayout/>, i: null,},
+    "dashboard": {e: <Dashboard />, i: <DashboardOutlined />,},
+    "user": {e: null, i: <UserOutlined />},
+    "activeUser": {e: <ActiveUser/>, i: null,},
+    "deletedUser": {e: <Home/>, i: null,},
+    "group": {e: null, i: <TeamOutlined/>,},
+    "groupManage": {e: <Home/>, i: null,},
+    "teacherManage": {e: <Home/>, i: null,},
+    "studentManage": {e: <Home/>, i: null,},
+    "setting": {e: null, i: <SettingOutlined/>,},
+    "announcementManage": {e: <Home/>, i: null,},
+    "routerManage": {e: <Home/>, i: null,},
+};
 
-function parseJson2Router(items) {
-    let routerArray = [];
-    for (const item of items) {
-        if (item.children.length === 0) {
-            routerArray.push(<Route key={item.path} path={item.path} element={item.element}/> );
-        } else {
-            let tmp = [];
-            for (const childrenKey of item.children) {
-                if (childrenKey.children.length === 0) {
-                    tmp.push(<Route key={childrenKey.path} path={childrenKey.path} element={childrenKey.element}/>);
-                } else {
-                    let tmp2 = [];
-                    for (const childrenKeyElement of childrenKey.children) {
-                        tmp2.push(<Route key={childrenKeyElement.path} path={childrenKeyElement.path} element={childrenKeyElement.element}/>);
-                    }
-                    tmp.push(<Route key={childrenKey.path} path={item.path}>{tmp2}</Route>)
-                }
-            }
-            routerArray.push(<Route key={item.path} path={item.path} element={item.element}>{tmp}</Route>);
+export const routers = await originRouter();
+
+function jC2R(o) {
+    let r = [];
+    o.forEach(v => {
+        let t = [];
+        if (v.children !== undefined) {
+            t = jC2R(v.children);
         }
-    }
-    return <BrowserRouter><Routes>{routerArray}</Routes></BrowserRouter>;
+        r.push({
+            id: v.id, path: v.path,
+            icon: routerElementMapping[v.key].i,
+            element: routerElementMapping[v.key].e,
+            name: v.name, visible: v.visible,
+            children: t
+        });
+    });
+    return r;
+}
+
+function buildTree(data, parentId) {
+    let tree = [];
+    data.forEach(item => {
+        if (item.parent === parentId) {
+            const children = buildTree(data, item.id);
+            if (children.length > 0) {
+                item.children = children;
+            }
+            tree.push(item);
+        }
+    });
+    return tree;
+}
+
+function j2r(o) {
+    let r = [];
+    o.forEach(v => {
+        let t = [];
+        if (v.children !== undefined) {
+            t = j2r(v.children);
+        }
+        r.push(<Route key={v.path} path={v.path} element={v.element}>{t}</Route>);
+    });
+    return r;
+}
+
+async function originRouter() {
+    const {data: res} = await routerTest();
+    let dat = buildTree(res, null);
+    return jC2R(dat);
+}
+
+function parseJson2Router() {
+    return <BrowserRouter><Routes>{j2r(routers)}</Routes></BrowserRouter>;
 }
 
 export const getRouterComponent = () => {
